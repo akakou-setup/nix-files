@@ -1,4 +1,5 @@
 { config, pkgs, ... }:
+ 
 
 {
   imports =
@@ -10,18 +11,7 @@
   environment.pathsToLink = [ "/libexec" ];
   nixpkgs.config.allowUnfree = true;
 
-  # Use the GRUB 2 boot loader.
-  boot.loader.grub = { 
-    enable = true;
-    version = 2;
-    device = "/dev/sda"; # or "nodev" for efi only
-    # efiSupport = true;
-    # efiInstallAsRemovable = true;
-  };
-
-  # boot.loader.efi.efiSysMountPoint = "/boot/efi";
-
-  networking.hostName = "akakou-pc";
+  boot.loader.systemd-boot.enable = true;
   networking.networkmanager.enable = true;
 
   # networking.wireless.enable = true;
@@ -29,18 +19,34 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-
   # Select internationalisation properties.
   i18n = {
     inputMethod.enabled = "ibus";
     inputMethod.ibus.engines = with pkgs.ibus-engines; [ mozc anthy ];
-    consoleFont = "Lat2-Terminus16";
-    consoleKeyMap = "us";
     defaultLocale = "en_US.UTF-8";
   };
+  
+  console.keyMap= "us";
+  console.font = "Lat2-Terminus16";
 
   # Set your time zone.
   time.timeZone = "Asia/Tokyo";
+
+  nixpkgs.overlays = [
+    (self: super:
+    {
+   zoomUsFixed = pkgs.zoom-us.overrideAttrs (old: {
+      postFixup = old.postFixup + ''
+        wrapProgram $out/bin/zoom-us --unset XDG_SESSION_TYPE
+      '';});
+   zoom = pkgs.zoom-us.overrideAttrs (old: {
+      postFixup = old.postFixup + ''
+        wrapProgram $out/bin/zoom --unset XDG_SESSION_TYPE
+      '';});
+      }
+      )
+  ];
+
 
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
@@ -48,15 +54,38 @@
     gnome3.nautilus
     gnome3.gedit
     gnome3.gnome-screenshot
-    chromium vscode
-    wireshark
+    gnome3.gnome-shell-extensions
+    vscode wireshark
     docker-compose
     numix-gtk-theme
     numix-icon-theme
     numix-icon-theme-circle
-    gnumake automake
+    arc-theme
+    gnumake automake cmake
     gcc gdb nodejs
+    tilix
+    gnome3.gnome-tweaks
+    google-chrome
+    zoom slack
   ];
+
+  environment.gnome.excludePackages = [ 
+    # pkgs.gnome.cheese
+    # pkgs.gnome-photos
+    # pkgs.gnome.gnome-music 
+    pkgs.gnome.gnome-terminal
+    # pkgs.gnome.gedit 
+    pkgs.epiphany
+    pkgs.evince
+    pkgs.gnome.gnome-characters
+    pkgs.gnome.totem
+    pkgs.gnome.tali
+    pkgs.gnome.iagno
+    pkgs.gnome.hitori
+    pkgs.gnome.atomix 
+    pkgs.gnome-tour
+  ];
+  
 
   # Enable sound.
   sound.enable = true;
@@ -66,33 +95,20 @@
   services.xserver = {
     enable = true;
     layout = "us";
-    xkbOptions = "eurosign:e";
 
-    # Enable the i3 Desktop Environment.
-    windowManager = {
-      i3 = {
-        enable = true;
-        package = pkgs.i3-gaps;
-      
-        extraPackages = with pkgs; [
-          dmenu
-          i3status
-          i3lock
-          i3blocks
-       ];
-      };
-    };
-    desktopManager.xterm.enable = false;
+    displayManager.gdm.enable = true;
+    desktopManager.gnome.enable = true;
 
     # Enable touchpad support.
     libinput.enable = true;
-
-    # Enable LightDM
-    displayManager.lightdm.enable = true;
+    
+    videoDrivers = [ "amdgpu" ];
   };
 
   # Enable the zsh Environment
   programs.zsh.enable = true;
+  programs.dconf.enable = true;
+
 
   users.users.akakou = {
     isNormalUser = true;
@@ -133,5 +149,5 @@
     };
   };
 
-  system.stateVersion = "19.03";
+  system.stateVersion = "21.05";
 }
