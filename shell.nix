@@ -2,7 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
-    nox 
+    nox xonsh
     vim neovim git
     zsh zsh-completions
     python python38Full

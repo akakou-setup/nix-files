@@ -66,7 +66,7 @@
     tilix
     gnome3.gnome-tweaks
     google-chrome
-    zoom slack
+    zoom slack discord
   ];
 
   environment.gnome.excludePackages = [ 
