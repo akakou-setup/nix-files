@@ -32,22 +32,6 @@
   # Set your time zone.
   time.timeZone = "Asia/Tokyo";
 
-  nixpkgs.overlays = [
-    (self: super:
-    {
-   zoomUsFixed = pkgs.zoom-us.overrideAttrs (old: {
-      postFixup = old.postFixup + ''
-        wrapProgram $out/bin/zoom-us --unset XDG_SESSION_TYPE
-      '';});
-   zoom = pkgs.zoom-us.overrideAttrs (old: {
-      postFixup = old.postFixup + ''
-        wrapProgram $out/bin/zoom --unset XDG_SESSION_TYPE
-      '';});
-      }
-      )
-  ];
-
-
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
     gnome3.gnome-terminal
@@ -56,7 +40,6 @@
     gnome3.gnome-screenshot
     gnome3.gnome-shell-extensions
     vscode wireshark
-    docker-compose
     numix-gtk-theme
     numix-icon-theme
     numix-icon-theme-circle
@@ -65,16 +48,17 @@
     gcc gdb nodejs
     tilix
     gnome3.gnome-tweaks
-    google-chrome
-    zoom slack discord
+    brave 
+    zoom-us slack discord
+    docker-compose
   ];
 
   environment.gnome.excludePackages = [ 
     # pkgs.gnome.cheese
     # pkgs.gnome-photos
     # pkgs.gnome.gnome-music 
-    pkgs.gnome.gnome-terminal
     # pkgs.gnome.gedit 
+    pkgs.gnome.gnome-terminal
     pkgs.epiphany
     pkgs.evince
     pkgs.gnome.gnome-characters
@@ -90,6 +74,14 @@
   # Enable sound.
   sound.enable = true;
   hardware.pulseaudio.enable = true;
+
+  services.logind.extraConfig = ''
+   RuntimeDirectorySize=4G
+  '';
+
+  # Enable bluetooth.
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
 
   # Enable the X11 windowing system.
   services.xserver = {
@@ -119,13 +111,15 @@
 
   virtualisation = {
     docker.enable = true;
+    waydroid.enable = true;
+    lxd.enable = true;
   };
 
   fonts = {
     fonts = with pkgs; [ 
       ipafont
       powerline-fonts
-      font-awesome-ttf
+      font-awesome
     ];
 
     fontconfig = { 
@@ -150,4 +144,8 @@
   };
 
   system.stateVersion = "21.05";
+  nixpkgs.config.permittedInsecurePackages = [
+                "python-2.7.18.6"
+  ];
+
 }
