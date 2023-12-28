@@ -5,11 +5,8 @@
     nox xonsh
     vim neovim git hub
     zsh zsh-completions
-    python python38Full
-    python27Packages.pip
-    python38Packages.pip
+    python 
     pipenv
     nodejs yarn 
-    python38Packages.ipython
   ];
 }

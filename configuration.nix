@@ -13,6 +13,11 @@
 
   boot.loader.systemd-boot.enable = true;
   networking.networkmanager.enable = true;
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 8080 ];
+  };
+
 
   # networking.wireless.enable = true;
   # Configure network proxy if necessary
@@ -22,7 +27,7 @@
   # Select internationalisation properties.
   i18n = {
     inputMethod.enabled = "ibus";
-    inputMethod.ibus.engines = with pkgs.ibus-engines; [ mozc anthy ];
+    inputMethod.ibus.engines = with pkgs.ibus-engines; [ mozc ];
     defaultLocale = "en_US.UTF-8";
   };
   
@@ -70,7 +75,6 @@
     pkgs.gnome-tour
   ];
   
-
   # Enable sound.
   sound.enable = true;
   hardware.pulseaudio.enable = true;
@@ -116,7 +120,7 @@
   };
 
   fonts = {
-    fonts = with pkgs; [ 
+    packages = with pkgs; [ 
       ipafont
       powerline-fonts
       font-awesome
@@ -143,9 +147,5 @@
     };
   };
 
-  system.stateVersion = "21.05";
-  nixpkgs.config.permittedInsecurePackages = [
-                "python-2.7.18.6"
-  ];
-
+  system.stateVersion = "23.11";
 }
