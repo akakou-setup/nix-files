@@ -39,46 +39,40 @@
 
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
-    gnome3.gnome-terminal
-    gnome3.nautilus
-    gnome3.gedit
-    gnome3.gnome-screenshot
-    gnome3.gnome-shell-extensions
+    pkgs.nautilus
+    pkgs.gedit
+    pkgs.gnome-screenshot
+    pkgs.gnome-shell-extensions
     vscode wireshark
     numix-gtk-theme
     numix-icon-theme
     numix-icon-theme-circle
     arc-theme
-    gnumake automake cmake
-    gcc gdb nodejs
     tilix
-    gnome3.gnome-tweaks
+    # gnone-tweaks
     brave 
     zoom-us slack discord
-    docker-compose
   ];
 
-  environment.gnome.excludePackages = [ 
+  environment.gnome.excludePackages = with pkgs; [ 
     # pkgs.gnome.cheese
     # pkgs.gnome-photos
     # pkgs.gnome.gnome-music 
     # pkgs.gnome.gedit 
-    pkgs.gnome.gnome-terminal
-    pkgs.epiphany
-    pkgs.evince
-    pkgs.gnome.gnome-characters
-    pkgs.gnome.totem
-    pkgs.gnome.tali
-    pkgs.gnome.iagno
-    pkgs.gnome.hitori
-    pkgs.gnome.atomix 
-    pkgs.gnome-tour
+    gnome-terminal
+    epiphany
+    evince
+    gnome-characters
+    totem
+    tali
+    iagno
+    hitori
+    atomix 
+    gnome-tour
   ];
   
-  # Enable sound.
-  sound.enable = true;
-  hardware.pulseaudio.enable = true;
 
+  # Enable sound.
   services.logind.extraConfig = ''
    RuntimeDirectorySize=4G
   '';
@@ -93,18 +87,17 @@
     layout = "us";
 
     displayManager.gdm.enable = true;
+    displayManager.gdm.wayland = false;
+
     desktopManager.gnome.enable = true;
 
     # Enable touchpad support.
     libinput.enable = true;
-    
-    videoDrivers = [ "amdgpu" ];
   };
 
   # Enable the zsh Environment
   programs.zsh.enable = true;
   programs.dconf.enable = true;
-
 
   users.users.akakou = {
     isNormalUser = true;
@@ -115,8 +108,6 @@
 
   virtualisation = {
     docker.enable = true;
-    waydroid.enable = true;
-    lxd.enable = true;
   };
 
   fonts = {
@@ -147,5 +138,5 @@
     };
   };
 
-  system.stateVersion = "23.11";
+  system.stateVersion = "25.05";
 }
